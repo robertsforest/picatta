@@ -14,7 +14,12 @@
 <body>
 <h1>Login</h1>
 <div class="container unauthenticated">
-    With GitHub: <a href="/oauth2/authorization/github">click here</a>
+    <div>
+        With GitHub: <a href="/oauth2/authorization/github">click here</a>
+    </div>
+    <div>
+        With Google: <a href="/oauth2/authorization/google">click here</a>
+    </div>
 </div>
 <div class="container authenticated" style="display: none">
     Logged in as: <span id="user"></span>
@@ -51,5 +56,6 @@
         return true;
     }
 </script>
+<h1><a href="/user/registration">New User? Register</a></h1>
 </body>
 </html>
