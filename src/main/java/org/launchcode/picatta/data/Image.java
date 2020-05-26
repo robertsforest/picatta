@@ -1,5 +1,7 @@
 package org.launchcode.picatta.data;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -11,6 +13,7 @@ public class Image {
     @Column(nullable = false)
     private String fileName;
 
+    @JsonIgnore
     @ManyToOne
     private User user;
 

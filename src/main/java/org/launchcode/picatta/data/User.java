@@ -5,6 +5,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users", uniqueConstraints = {
@@ -35,6 +37,9 @@ public class User {
     private AuthProvider provider;
 
     private String providerId;
+
+    @OneToMany(mappedBy="user", cascade = CascadeType.ALL)
+    private final List<Image> images = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -99,4 +104,9 @@ public class User {
     public void setProviderId(String providerId) {
         this.providerId = providerId;
     }
+
+    public List<Image> getImages() {
+        return images;
+    }
+
 }

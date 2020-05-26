@@ -16,6 +16,7 @@ import org.launchcode.picatta.payload.AuthResponse;
 import org.launchcode.picatta.payload.LoginRequest;
 import org.launchcode.picatta.payload.UploadRequest;
 import org.launchcode.picatta.repository.ImageRepository;
+import org.launchcode.picatta.repository.UserRepository;
 import org.launchcode.picatta.security.CurrentUser;
 import org.launchcode.picatta.security.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,38 +36,26 @@ import javax.validation.Valid;
 import java.io.File;
 import java.net.URI;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
-@Controller
+@RestController
 public class ImageController {
     private static final Regions clientRegion = Regions.US_EAST_2;
     private static final String bucketName = "picatta-images";
     private static final String SUFFIX = "/";
     private static final String imagePath = "M:\\picatta\\tmp";
-    private final AwsStorageService awsStorageService;
 
     @Autowired
     private ImageRepository imageRepository;
 
     @Autowired
-    public ImageController(AwsStorageService awsStorageService){
-        this.awsStorageService = awsStorageService;
-    }
+    private UserRepository userRepository;
 
-    @PostMapping("/saveImage")
-    public ResponseEntity<?> saveImage(@Valid @RequestBody UploadRequest uploadRequest) {
-
-        Image image = new Image();
-        image.setFileName(uploadRequest.getFileName());
-        Image result = imageRepository.save(image);
-
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/user/me")
-                .buildAndExpand(result.getId()).toUri();
-
-
-
-        return ResponseEntity.created(location)
-                .body(new ApiResponse(true, "Image uploaded successfully@"));
+    @GetMapping("/listImages")
+    public List<Image> listImages(@RequestParam String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        return user.get().getImages();
     }
 
 //    @PostMapping("/upload")
