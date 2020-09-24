@@ -35,6 +35,7 @@ public class BucketController {
         Image image = new Image();
         String fileName = amazonClient.uploadFile(file, email);
         image.setFileName(fileName);
+        image.setOrigName(file.getOriginalFilename());
         image.setUser(userRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("User", "email", email)));
         Image result = imageRepository.save(image);
@@ -42,7 +43,11 @@ public class BucketController {
     }
 
     @DeleteMapping("/deleteFile")
-    public String deleteFile(@RequestPart(value = "url") String fileUrl) {
-        return this.amazonClient.deleteFileFromS3Bucket(fileUrl);
+    public String deleteFile(@RequestParam(value = "fileName") String fileName) {
+        Optional<Image> file = imageRepository.findByFileName(fileName);
+        if(file.isPresent()){
+            imageRepository.delete(file.get());
+        }
+        return this.amazonClient.deleteFileFromS3Bucket(fileName);
     }
 }
